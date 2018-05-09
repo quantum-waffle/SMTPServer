@@ -1,6 +1,8 @@
 #!/usr/bin/python3         
 import socket                                         
 
+server_ip, server_port = "0.0.0.0", 666
+
 dominio = [["eddy", "10.8.0.10", 25],\
 		   ["michelle", "10.8.0.x", 25],\
 		   ["mauricio", "10.8.0.x", 25],\
@@ -11,6 +13,7 @@ def createConnection(host, port):
 		serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		serversocket.bind((host, port))
 		serversocket.listen(5) # queue up to 5 requests
+		print("Listening on {}:{} ...".format(host, port))
 		clientsocket, addr = serversocket.accept() # establish a connection
 	except:
 		print("Error in socket creation")
@@ -130,8 +133,16 @@ def processMail(mail_from, rcpt_to, data, domain, owner):
 
 def main():
 	print("SMTP Server is up!")
-	clientsocket, addr = createConnection("0.0.0.0", 667)
-	mail_from, rcpt_to, data = run(clientsocket, addr)
-	processMail(mail_from, rcpt_to, data, dominio, "ALVAR0")
-
+	tries = 0
+	while(tries < 3):
+		clientsocket, addr = createConnection(server_ip, server_port)
+		try:
+			mail_from, rcpt_to, data = run(clientsocket, addr)
+		except:
+			print("FATAL: Error reading SMTP protocol")
+			clientsocket.close()
+			tries += 1
+		else:
+			processMail(mail_from, rcpt_to, data, dominio, "ALVAR0")
+	print("Max number of tries reached, disconnecting...")
 main()
