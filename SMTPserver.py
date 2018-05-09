@@ -1,8 +1,7 @@
 #!/usr/bin/python3         
 import socket                                         
 
-server_ip, server_port = "0.0.0.0", 666
-
+server_ip, server_port, owner = "0.0.0.0", 666, "alvaro"
 dominio = [["eddy", "10.8.0.10", 25],\
 		   ["michelle", "10.8.0.x", 25],\
 		   ["mauricio", "10.8.0.x", 25],\
@@ -119,9 +118,13 @@ def redirectMail(clientsocket, mail_from, rcpt_to, data, owner):
 
 def processMail(mail_from, rcpt_to, data, domain, owner):
 	for i in range(len(rcpt_to)):
-		user, dom = rcpt_to[i].upper().split("@")
+		try:
+			user, dom = rcpt_to[i].upper().split("@")
+		except:
+			user, dom = "",""
+
 		print("received for: {}".format(dom))
-		if("ALVARO" in dom): #this email is for u :)
+		if(owner in dom): #this email is for u :)
 			print("NEW MAIL! :\n", data)
 		elif (domain[i][0].upper() in dom):
 			print("Redirecting mail to: {}".format(dom))
@@ -143,6 +146,6 @@ def main():
 			clientsocket.close()
 			tries += 1
 		else:
-			processMail(mail_from, rcpt_to, data, dominio, "ALVAR0")
+			processMail(mail_from, rcpt_to, data, dominio, owner.upper())
 	print("Max number of tries reached, disconnecting...")
 main()
