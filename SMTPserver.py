@@ -1,5 +1,5 @@
 #!/usr/bin/python3         
-import socket                                         
+import socket, pymysql                                         
 
 server_ip, server_port, owner = "0.0.0.0", 666, "alvaro"
 dominio = [["eddy", "10.8.0.10", 25],\
@@ -126,6 +126,7 @@ def processMail(mail_from, rcpt_to, data, domain, owner):
 		print("received for: {}".format(dom))
 		if(owner in dom): #this email is for u :)
 			print("NEW MAIL! :\n", data)
+			saveToDB()
 		elif (domain[i][0].upper() in dom):
 			print("Redirecting mail to: {}".format(dom))
 			clientsocket, addr = createConnection(domain[i][1], domain[i][2])
@@ -133,6 +134,26 @@ def processMail(mail_from, rcpt_to, data, domain, owner):
 			print("MAIL REDIRECTED TO {}, domain {}, port {}".format(rcpt_to[i], domain[i][1], domain[i][2]))
 		else:
 			print("Nothing to do with incoming mail. Destroying it...")
+
+# Simple routine to run a query on a database and print the results:
+def doQuery( conn ) :
+    cur = conn.cursor()
+
+    cur.execute( "SELECT from_ FROM mail" )
+
+    for from_ in cur.fetchall() :
+        print (from_)
+
+def saveToDB():
+	hostname = 'localhost'
+	username = 'alvaro'
+	password = 'toor'
+	database = 'mails'
+
+	print ("Using pymysql…")
+	myConnection = pymysql.connect( host=hostname, user=username, passwd=password, db=database )
+	doQuery( myConnection )
+	myConnection.close()
 
 def main():
 	print("SMTP Server is up!")
