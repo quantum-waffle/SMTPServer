@@ -4,3 +4,7 @@ insert into mail(from_, to_, subject, content, status, type, mark) values("info@
 
 https://www.a2hosting.com/kb/developer-corner/mysql/connecting-to-mysql-using-python
 
+apt-get install libmariadbclient-dev
+gem install mysql2
+
+https://github.com/brianmario/mysql2
