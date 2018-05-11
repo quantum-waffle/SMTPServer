@@ -1,7 +1,7 @@
 #!/usr/bin/python3         
 import time, SMTPProtocol as smtp, SocketManager as sm                                    
 
-server_ip, server_port, owner = "0.0.0.0", 6666, "alvaro"
+server_ip, server_port, owner = "0.0.0.0", 25, "alvaro"
 dominio = [["eddy", "10.8.0.10", 25],\
 		   ["michelle", "10.8.0.x", 25],\
 		   ["mauricio", "10.8.0.x", 25],\
