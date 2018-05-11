@@ -1,4 +1,5 @@
 # SMTPServer
+[![Python3 Status](https://caniusepython3.com/project/django-firebird.png)](https://caniusepython3.com/project/django-firebird)
 
 This proyect provides a simple SMTP that stores mails into a database. It is connected to [this client](https://github.com/AlvaroSanchezTortola/SMTPClient), [this inbox](https://github.com/AlvaroSanchezTortola/SMTPReader) and [this logger](https://github.com/AlvaroSanchezTortola/SMTPLogger). 
 
