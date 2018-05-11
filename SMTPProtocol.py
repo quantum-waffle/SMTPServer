@@ -102,10 +102,10 @@ def processMail(mail_from, rcpt_to, data, domain, owner):
 			print("NEW MAIL! :\n", data)
 			db.saveToDB(mail_from, rcpt_to, data)
 		#elif (dom in domain[i][0].upper()):
-		elif (dom == "EDDY"):
+		elif (dom == "EDDY.COM"):
 			print("Redirecting mail to: {}".format(dom))
 			#clientsocket, addr = createConnection(domain[i][1], domain[i][2])
-			clientsocket, addr = createConnection("192.168.1.10", 25)
+			clientsocket, addr = sm.createConnection("192.168.1.10", 25)
 			redirectMail(clientsocket, mail_from, rcpt_to, data, owner)
 			print("MAIL REDIRECTED TO {}, domain {}, port {}".format(rcpt_to[i], domain[i][1], domain[i][2]))
 		else:

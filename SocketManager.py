@@ -9,7 +9,7 @@ def createConnection(host, port):
 		print("Listening on {}:{} ...".format(host, port))
 		clientsocket, addr = serversocket.accept() # establish a connection
 	except:
-		print("Error in socket creation")
+		print("Error in socket creation to {}:{}".format(host, port))
 		clientsocket, addr = 0, 0
 	return clientsocket, addr
 
