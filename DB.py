@@ -6,9 +6,12 @@ def doQuery( conn, mail_from, rcpt_to, data ) :
 	rcpt = ""
 	for i in range(len(rcpt_to)):
 		rcpt += "<{}>,".format(rcpt_to[i])
-	subject, content = data.split("\n", maxsplit=1)
-	_, subject = subject.split(":")
-
+	try:	
+		subject, content = data.split("\n", maxsplit=1)
+		_, subject = subject.split(":")
+	except:
+		subject, content = "empty", data
+		
 	cur = conn.cursor()
 	q = "INSERT  INTO mails(from_, to_, subject, content, status, type, mark) values(\"{}\", \"{}\", \"{}\", \"{}\",0,0,0 );".format(mail_from, rcpt, subject.strip(), content.rstrip())
 	try:
