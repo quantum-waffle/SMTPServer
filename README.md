@@ -34,6 +34,6 @@ pip3 install -r requirements.txt
 ```
 ## Run
 Assuming you run it from a terminal within the main folder:
-```
+``` sh
 python3 SMTPServer.py
 ```
