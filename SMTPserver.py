@@ -1,7 +1,7 @@
 #!/usr/bin/python3         
-import socket, pymysql                                         
+import socket, pymysql, time                                         
 
-server_ip, server_port, owner = "0.0.0.0", 666, "alvaro"
+server_ip, server_port, owner = "0.0.0.0", 6666, "alvaro"
 dominio = [["eddy", "10.8.0.10", 25],\
 		   ["michelle", "10.8.0.x", 25],\
 		   ["mauricio", "10.8.0.x", 25],\
@@ -144,7 +144,7 @@ def doQuery( conn, mail_from, rcpt_to, data ) :
 	_, subject = subject.split(":")
 
 	cur = conn.cursor()
-	q = "INSERT  INTO mail(from_, to_, subject, content, status, type, mark) values(\"{}\", \"{}\", \"{}\", \"{}\",0,0,0 );".format(mail_from, rcpt, subject.strip(), content.rstrip())
+	q = "INSERT  INTO mails(from_, to_, subject, content, status, type, mark) values(\"{}\", \"{}\", \"{}\", \"{}\",0,0,0 );".format(mail_from, rcpt, subject.strip(), content.rstrip())
 	try:
 		cur.execute(q)
 		conn.commit()
@@ -157,7 +157,7 @@ def saveToDB(mail_from, rcpt_to, data):
 	hostname = 'localhost'
 	username = 'alvaro'
 	password = 'toor'
-	database = 'mails'
+	database = 'proyecto1'
 
 	print ("Using pymysql…")
 	myConnection = pymysql.connect( host=hostname, user=username, passwd=password, db=database )
@@ -166,9 +166,21 @@ def saveToDB(mail_from, rcpt_to, data):
 
 def main():
 	print("SMTP Server is up!")
-	tries = 0
+	tries, socket_created = 0, False
 	while(tries < 3):
-		clientsocket, addr = createConnection(server_ip, server_port)
+		while not socket_created:
+			try:
+				print("Creating connection...")
+				clientsocket, addr = createConnection(server_ip, server_port)
+			except:
+				print("Cannot create socket connection, retrying in 10 seconds...")
+				time.sleep(10)
+			else:
+				if(clientsocket==0):
+					print("Cannot create socket connection, retrying in 10 seconds...")
+					time.sleep(10)
+				else:
+					socket_created = True
 		try:
 			mail_from, rcpt_to, data = run(clientsocket, addr)
 		except:
@@ -176,6 +188,9 @@ def main():
 			clientsocket.close()
 			tries += 1
 		else:
+			socket_created = False
 			processMail(mail_from, rcpt_to, data, dominio, owner.upper())
+			print("Everytings done!\n")
+			time.sleep(1)
 	print("Max number of tries reached, disconnecting...")
 main()

@@ -1,0 +1,22 @@
+CREATE USER 'alvaro'@'localhost' IDENTIFIED BY 'toor';
+CREATE DATABASE proyecto1;
+GRANT ALL PRIVILEGES ON proyecto1.* TO 'alvaro'@'localhost' IDENTIFIED BY 'toor';
+FLUSH PRIVILEGES;
+USE proyecto1;
+CREATE TABLE users (
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE mails (
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, 
+	from_ VARCHAR(50), 
+	to_ VARCHAR(255), 
+	subject VARCHAR(50), 
+	content VARCHAR(255), 
+	status INT, 
+	type INT, 
+	mark INT,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
