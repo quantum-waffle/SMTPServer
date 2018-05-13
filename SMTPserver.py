@@ -1,9 +1,10 @@
 #!/usr/bin/python3         
 import time, SMTPProtocol as smtp, SocketManager as sm                                    
 
-server_ip, server_port, owner = "0.0.0.0", 25, "alvaro"
-dominio = [["EDDY", "192.168.1.10", 25],\
+server_ip, server_port, owner = "0.0.0.0", 2526, "alvaro"
+dominio = [["eddy", "192.168.1.10", 25],\
 		   ["michelle", "10.8.0.x", 25],\
+		   ["yo", "127.0.0.1", 2525],\
 		   ["mauricio", "10.8.0.x", 25],\
 		   ["esmeralda", "10.8.0.9", 25]]
 

@@ -1,5 +1,5 @@
 #!/usr/bin/python3         
-import socket
+import socket, time
 
 def createConnection(host, port):
 	try:
@@ -20,3 +20,16 @@ def send(clientsocket, mssg):
 def receive(clientsocket, rstrip=True, size=1024):
 	if rstrip: return clientsocket.recv(size).decode('ascii').rstrip() #receive
 	return clientsocket.recv(size).decode('ascii')
+
+def ConnectTo(host, port, tries=3):
+	while(tries>0):
+		try:
+			serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			serversocket.connect((host, port))
+			print("Connected to {}:{}!".format(host, port))
+			return serversocket
+		except:
+			print("Error connecting to {}:{}".format(host, port))
+			tries = tries -1
+			time.sleep(2)
+	return 0
