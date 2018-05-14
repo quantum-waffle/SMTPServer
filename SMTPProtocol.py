@@ -40,21 +40,21 @@ def receiveMail(clientsocket, addr):
 						else:
 							data += aux
 					sm.send(clientsocket, "250 Ok: queued as {}".format("x"))
-					sy.syslog(sy.LOG_INFO, "INFO: Mail processed succesfully fom {}.".format(addr))
+					sy.syslog(sy.LOG_INFO, "INFO: Mail processed succesfully for {}.".format(addr))
 					print(mail_from, rcpt_to, data)
 					clientsocket.close()
 					return mail_from, rcpt_to, data
 					flag = False
 				else:
-					sy.syslog(sy.LOG_ERR, "ERROR: Error in  RCPT TO from {}.".format(addr))
+					sy.syslog(sy.LOG_ERR, "ERROR: Syntax error in  RCPT TO from {}.".format(addr))
 					print("ERROR EN RCPT TO")
 					flag = False
 			else:
-				sy.syslog(sy.LOG_ERR, "ERROR: Error in  MAIL FROM from {}.".format(addr))
+				sy.syslog(sy.LOG_ERR, "ERROR: Syntax error in  MAIL FROM from {}.".format(addr))
 				print("Error en MAIL FROM")
 				flag = False
 		else:
-			sy.syslog(sy.LOG_ERR, "ERROR: Error in  HELO from {}.".format(addr))
+			sy.syslog(sy.LOG_ERR, "ERROR: Syntax error in  HELO from {}.".format(addr))
 			print("Error en HELO")
 			flag = False
 

@@ -3,7 +3,7 @@ import time, SMTPProtocol as smtp, SocketManager as sm, syslog as sy
 
 sy.openlog("smtp_server", logoption=sy.LOG_PID)                    
 
-server_ip, server_port, owner = "0.0.0.0", 2526, "alvaro"
+server_ip, server_port, owner = "0.0.0.0", 25, "alvaro"
 dominio = [["eddy", "192.168.1.10", 25],\
 		   ["michelle", "10.8.0.x", 25],\
 		   ["yo", "127.0.0.1", 2525],\
@@ -34,9 +34,10 @@ def main():
 		try:
 			mail_from, rcpt_to, data = smtp.receiveMail(clientsocket, addr)
 		except:
-			sy.syslog(sy.LOG_ERR, 'ERROR: Something went wrong reading SMTP protocol.')
+			sy.syslog(sy.LOG_ERR, 'ERROR: Error reading SMTP protocol.')
 			print("FATAL: Error reading SMTP protocol")
 			clientsocket.close()
+			socket_created = False
 			tries += 1
 		else:
 			socket_created = False
