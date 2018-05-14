@@ -1,8 +1,11 @@
 #!/usr/bin/python3         
-import SocketManager as sm, DB as db
+import SocketManager as sm, DB as db, syslog as sy    
+
+sy.openlog("smtp_server", logoption=sy.LOG_PID)  
 
 def receiveMail(clientsocket, addr):
 	mail_from, rcpt_to, data, flag = "", [], "", True
+	sy.syslog(sy.LOG_INFO, "INFO: Got a connection from {}.".format(addr))
 	print("Got a connection from %s" % str(addr))
 	while flag:		 
 		sm.send(clientsocket, "220 smtp.alvaro.com") 
@@ -37,17 +40,21 @@ def receiveMail(clientsocket, addr):
 						else:
 							data += aux
 					sm.send(clientsocket, "250 Ok: queued as {}".format("x"))
+					sy.syslog(sy.LOG_INFO, "INFO: Mail processed succesfully fom {}.".format(addr))
 					print(mail_from, rcpt_to, data)
 					clientsocket.close()
 					return mail_from, rcpt_to, data
 					flag = False
 				else:
+					sy.syslog(sy.LOG_ERR, "ERROR: Error in  RCPT TO from {}.".format(addr))
 					print("ERROR EN RCPT TO")
 					flag = False
 			else:
+				sy.syslog(sy.LOG_ERR, "ERROR: Error in  MAIL FROM from {}.".format(addr))
 				print("Error en MAIL FROM")
 				flag = False
 		else:
+			sy.syslog(sy.LOG_ERR, "ERROR: Error in  HELO from {}.".format(addr))
 			print("Error en HELO")
 			flag = False
 
@@ -79,14 +86,19 @@ def redirectMail(clientsocket, mail_from, rcpt_to, data, owner):
 					val_1 = sm.receive(clientsocket)
 					print(val_1)
 					if("250" in val_1):
+						sy.syslog(sy.LOG_INFO, "INFO: Done redirecting mail.")
 						print("DONE!")
 				else:
+					sy.syslog(sy.LOG_ERR, "ERROR: Error sending data")
 					print("Error in sending data")
 			else:
+				sy.syslog(sy.LOG_ERR, "ERROR: Error in mail from")
 				print("Error in mail from")
 		else:
+			sy.syslog(sy.LOG_ERR, "ERROR: Error in helo")
 			print("Error in helo")
 	else:
+		sy.syslog(sy.LOG_ERR, "ERROR: Error stablishing connection")
 		print("Error stablishing connection")
 
 
@@ -99,6 +111,7 @@ def processMail(mail_from, rcpt_to, data, domain, owner):
 
 		print("received for: {}".format(dom))
 		if(owner in dom): #this email is for u :)
+			sy.syslog(sy.LOG_INFO, "INFO: New mail received for {}.".format(owner))
 			print("NEW MAIL! :\n", data)
 			db.saveToDB(mail_from, rcpt_to, data)
 		#elif (dom in domain[i][0].upper()):
@@ -106,14 +119,18 @@ def processMail(mail_from, rcpt_to, data, domain, owner):
 			for j in range(len(domain)):
 				print("Checking for {}".format(domain[j][0]))
 				if (domain[j][0].upper() in dom):
+					sy.syslog(sy.LOG_INFO, "INFO: Redirecting mail to: {}".format(dom))
 					print("Redirecting mail to: {}".format(dom))
 					#clientsocket, addr = createConnection(domain[i][1], domain[i][2])
 					clientsocket = sm.ConnectTo(domain[j][1], domain[j][2])
 					if(clientsocket!=0):
 						redirectMail(clientsocket, mail_from, rcpt_to, data, owner)
 						clientsocket.close()
+						sy.syslog(sy.LOG_INFO, "INFO: Mail redirected to {}, domain {}, port {}".format(rcpt_to[i], domain[j][1], domain[j][2]))
 						print("MAIL REDIRECTED TO {}, domain {}, port {}".format(rcpt_to[i], domain[j][1], domain[j][2]))
 					else:
+						sy.syslog(sy.LOG_ERR, "ERROR: Could not redirect to {} at {}:{}".format(rcpt_to[i], domain[j][1], domain[j][2]))
 						print("Could not redirect to {} at {}:{}".format(rcpt_to[i], domain[j][1], domain[j][2]))
 		else:
+			sy.syslog(sy.LOG_WARNING, "WARNING: Nothing to do with incoming mail, destroying it.")
 			print("Nothing to do with incoming mail. Destroying it...")

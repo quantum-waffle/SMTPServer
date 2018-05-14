@@ -1,5 +1,7 @@
 #!/usr/bin/python3         
-import pymysql
+import pymysql, syslog as sy    
+
+sy.openlog("smtp_server", logoption=sy.LOG_PID) 
 
 # Simple routine to run a query on a database and print the results:
 def doQuery( conn, mail_from, rcpt_to, data ) :
@@ -20,6 +22,7 @@ def doQuery( conn, mail_from, rcpt_to, data ) :
 		#for from_ in cur.fetchall() :
         #	print (from_)
 	except:
+		sy.syslog(sy.LOG_ERR, "ERROR: Error inserting into database.")
 		print("FATAL: Error inserting into database")
 
 def saveToDB(mail_from, rcpt_to, data):
@@ -28,6 +31,7 @@ def saveToDB(mail_from, rcpt_to, data):
 	password = 'toor'
 	database = 'proyecto1'
 
+	sy.syslog(sy.LOG_INFO, "INFO: Using pymysql.")
 	print ("Using pymysql…")
 	myConnection = pymysql.connect( host=hostname, user=username, passwd=password, db=database )
 	doQuery( myConnection, mail_from, rcpt_to, data )
